@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand & Power Tools Workshop - HVAC 507</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .scroll-smooth { scroll-behavior: smooth; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        /* --- Animations Start --- */
+        /* For elements visible on page load */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-load {
+            /* Set opacity to 0 to hide it before animation */
+            opacity: 0; 
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        /* Staggered delays for the hero elements */
+        .fade-in-load.delay-1 { animation-delay: 200ms; }
+        .fade-in-load.delay-2 { animation-delay: 400ms; }
+        .fade-in-load.delay-3 { animation-delay: 600ms; }
+
+        /* For elements revealed on scroll */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            /* Use a CSS variable for staggered delays, set in HTML */
+            transition-delay: var(--reveal-delay, 0ms);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* --- Animations End --- */
+
+        /* --- Nav Scroll Style --- */
+        #main-nav.scrolled {
+            height: 3.5rem; /* h-14 */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+
+        /* --- New: Nav Link Hover --- */
+        .nav-link {
+            position: relative;
+            text-decoration: none;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; /* Position below the text */
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3b82f6; /* blue-600 */
+            transform: scaleX(0); /* Start scaled to 0 */
+            transform-origin: left;
+            transition: transform 0.3s ease-out;
+        }
+        .nav-link:hover::after {
+            transform: scaleX(1); /* Scale to 100% on hover */
+        }
+
+        /* --- New: Section Title Enhancement --- */
+        .section-title {
+            position: relative;
+            display: inline-block; /* To make the underline fit the text */
+            padding-bottom: 0.75rem; /* pb-3 */
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 75%; /* Underline 75% of the title */
+            height: 3px;
+            /* Gradient: Blue to Purple */
+            background: linear-gradient(to right, #3b82f6, #a855f7); /* blue-600 to purple-500 */
+            border-radius: 2px;
+            /* Add a subtle glow */
+            box-shadow: 0 0 10px #3b82f6, 0 0 5px #a855f7;
+        }
+        
+        /* Adjust for centered titles */
+        .text-center .section-title::after {
+            left: 50%;
+            transform: translateX(-50%); /* Center the underline */
+        }
+
+        /* --- New: Pulsing Animation --- */
+        @keyframes pulse-blue {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+        }
+        .pulse-animate-blue {
+            animation: pulse-blue 2s infinite;
+            animation-delay: 1s; /* Start after 1 sec */
+        }
+        
+        /* --- DELETED: pulse-green --- */
+        /* @keyframes pulse-green { ... } */
+        /* .pulse-animate-green { ... } */
+
+        /* --- NEW: pulse-purple --- */
+        @keyframes pulse-purple {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); /* purple-500 */
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+            }
+        }
+        .pulse-animate-purple {
+            animation: pulse-purple 2s infinite;
+            animation-delay: 1s; /* Start after 1 sec */
+        }
+
+        /* --- New: Floating Animation --- */
+        @keyframes float-bob {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animate {
+            animation: float-bob 4s ease-in-out infinite;
+            /* Stagger animations */
+        }
+        .float-animate.delay-1 { animation-delay: 0s; }
+        .float-animate.delay-2 { animation-delay: 2s; } /* Stagger start time */
+
+        /* --- New: List Item Slide-in --- */
+        .reveal-on-scroll.is-visible .slide-in-li {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        /* Stagger list item animations */
+        .reveal-on-scroll.is-visible .slide-in-li:nth-child(1) { animation-delay: 0.2s; }
+        .reveal-on-scroll.is-visible .slide-in-li:nth-child(2) { animation-delay: 0.3s; }
+        .reveal-on-scroll.is-visible .slide-in-li:nth-child(3) { animation-delay: 0.4s; }
+        .reveal-on-scroll.is-visible .slide-in-li:nth-child(4) { animation-delay: 0.5s; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- DELETED: Cursor Follower --- */
+        /* #cursor-dot { ... } */
+    </style>
+</head>
+<!-- EDIT: Switched to dark theme -->
+<body class="bg-black text-slate-300 scroll-smooth antialiased">
+
+    <!-- Navigation -->
+    <!-- EDIT: Switched to dark theme -->
+    <nav id="main-nav" class="fixed top-0 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700 z-50 shadow-sm transition-all duration-300 ease-in-out h-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-full">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="hammer" class="h-6 w-6 text-blue-500"></i> <!-- Adjusted color -->
+                    <span class="font-bold text-xl tracking-tight text-slate-100">Workshop<span class="text-blue-500">Report</span></span> <!-- Adjusted color -->
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <!-- Adjusted colors -->
+                    <a href="#intro" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition nav-link">Introduction</a>
+                    <a href="#safety" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition nav-link">Safety</a>
+                    <a href="#tools" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition nav-link">Tools</a>
+                    <a href="#process" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition nav-link">Process</a>
+                    <!-- --- DELETED: Gallery Link --- -->
+                    <!-- <a href="#gallery" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition nav-link">Gallery</a> -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Already dark) -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-slate-900 overflow-hidden">
+        <div class="absolute inset-0">
+            <img id="hero-bg" src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80" alt="Workshop Background" class="w-full h-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
+        </div>
+        
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium mb-6 fade-in-load">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Project Completed
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 fade-in-load delay-1">
+                Hand & Power Tools Workshop
+            </h1>
+            <p class="mt-4 text-xl text-slate-300 max-w-2xl mx-auto fade-in-load delay-2">
+                A practical carpentry workshop focusing on hand tool proficiency, power tool safety, and industrial standards.
+            </p>
+
+            <!-- Project Details Card -->
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto fade-in-load delay-3">
+                <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-white">
+                    <div class="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Instructor</div>
+                    <div class="font-bold text-lg">Mr. Abdulaziz Alshehri</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-white">
+                    <div class="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Group</div>
+                    <div class="font-bold text-lg">DataVolt Hvac-5</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Introduction Section -->
+    <!-- EDIT: Switched to dark theme -->
+    <section id="intro" class="py-16 bg-slate-900 reveal-on-scroll">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="prose prose-lg text-slate-400 mx-auto"> <!-- Adjusted text color -->
+                <!-- ADDED 'section-title' class -->
+                <h2 class="text-3xl font-bold text-slate-100 mb-6 section-title">1. Introduction</h2> <!-- Adjusted text color -->
+                <p class="mb-4">
+                    This report details the practical workshop sessions conducted on Tuesday (2025/11/11) and Wednesday (2025/11/12). The primary objective was to apply theoretical knowledge of workshop safety, hand tools, and power tools to a practical project.
+                </p>
+                <!-- Adjusted colors -->
+                <p class="p-6 bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg italic text-blue-300">
+                    "The task assigned to our group (DataVolt Hvac-5) was to fabricate a wooden square box, requiring precision in measuring, cutting, assembling, and finishing."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Safety Section -->
+    <!-- EDIT: Switched to dark theme -->
+    <section id="safety" class="py-16 bg-black border-t border-slate-700">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <!-- ADDED 'section-title' class -->
+                <h2 class="text-3xl font-bold text-slate-100 reveal-on-scroll section-title">2. Workshop Safety & PPE</h2> <!-- Adjusted color -->
+                <p class="mt-4 text-lg text-slate-400 reveal-on-scroll" style="--reveal-delay: 100ms;">Safety is the top priority. The following equipment was mandatory.</p> <!-- Adjusted color -->
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Helmet -->
+                <!-- Adjusted card colors -->
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 text-center group reveal-on-scroll" style="--reveal-delay: 200ms;">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                        <i data-lucide="hard-hat" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100">Safety Helmet</h3> <!-- Adjusted color -->
+                    <p class="text-sm text-slate-400 mt-2">Protection against falling objects in the workshop.</p> <!-- Adjusted color -->
+                </div>
+                
+                <!-- Goggles -->
+                 <!-- Adjusted card colors -->
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 text-center group reveal-on-scroll" style="--reveal-delay: 300ms;">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                        <i data-lucide="glasses" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100">Safety Goggles</h3> <!-- Adjusted color -->
+                    <p class="text-sm text-slate-400 mt-2">Crucial for eye protection while sawing or hammering.</p> <!-- Adjusted color -->
+                </div>
+
+                <!-- Coveralls -->
+                 <!-- Adjusted card colors -->
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 text-center group reveal-on-scroll" style="--reveal-delay: 400ms;">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                        <i data-lucide="shirt" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100">Blue Coveralls</h3> <!-- Adjusted color -->
+                    <p class="text-sm text-slate-400 mt-2">"EWA" standard uniform to protect clothing and skin.</p> <!-- Adjusted color -->
+                </div>
+
+                <!-- Gloves -->
+                 <!-- Adjusted card colors -->
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 text-center group reveal-on-scroll" style="--reveal-delay: 500ms;">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                        <i data-lucide="hand" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100">HyFlex Gloves</h3> <!-- Adjusted color -->
+                    <p class="text-sm text-slate-400 mt-2">Essential grip and protection against wooden splinters.</p> <!-- Adjusted color -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools & Materials -->
+    <!-- EDIT: Switched to dark theme -->
+    <section id="tools" class="py-16 bg-slate-900 border-t border-slate-700">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- ADDED 'section-title' class -->
+            <h2 class="text-3xl font-bold text-slate-100 mb-10 reveal-on-scroll section-title">3. Tools & Materials</h2> <!-- Adjusted color -->
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Hand Tools -->
+                <!-- Adjusted card colors -->
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 reveal-on-scroll float-animate delay-1" style="--reveal-delay: 100ms;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-blue-600 rounded-lg text-white">
+                            <i data-lucide="wrench" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">Hand Tools</h3> <!-- Adjusted color -->
+                    </div>
+                    <ul class="space-y-4 text-slate-300"> <!-- Adjusted text color -->
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0"></i> <!-- Adjusted color -->
+                            <div><span class="font-semibold text-slate-100">Claw Hammer:</span> Used for driving nails and removing bent ones.</div> <!-- Adjusted color -->
+                        </li>
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0"></i> <!-- Adjusted color -->
+                            <div><span class="font-semibold text-slate-100">Try Square:</span> Essential for ensuring 90-degree corners.</div> <!-- Adjusted color -->
+                        </li>
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0"></i> <!-- Adjusted color -->
+                            <div><span class="font-semibold text-slate-100">Measuring Tape:</span> "Measure twice, cut once."</div> <!-- Adjusted color -->
+                        </li>
+                         <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0"></i> <!-- Adjusted color -->
+                            <div><span class="font-semibold text-slate-100">Files & Sanding Block:</span> For smoothing rough edges.</div> <!-- Adjusted color -->
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Power Tools -->
+                <!-- Adjusted card colors -->
+                <!-- UPDATED: amber -> purple -->
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300 reveal-on-scroll float-animate delay-2" style="--reveal-delay: 200ms;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-purple-600 rounded-lg text-white"> <!-- UPDATED: amber -> purple -->
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">Power Tools</h3> <!-- Adjusted color -->
+                    </div>
+                    <ul class="space-y-4 text-slate-300"> <!-- Adjusted text color -->
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0"></i> <!-- UPDATED: amber -> purple -->
+                            <div><span class="font-semibold text-slate-100">Power Saw / Jigsaw:</span> Used for cutting larger wooden planks efficiently.</div> <!-- Adjusted color -->
+                        </li>
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0"></i> <!-- UPDATED: amber -> purple -->
+                            <div><span class="font-semibold text-slate-100">Power Drill:</span> For creating pilot holes to prevent wood splitting.</div> <!-- Adjusted color -->
+                        </li>
+                        <li class="flex items-start gap-3 slide-in-li">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0"></i> <!-- UPDATED: amber -> purple -->
+                            <div><span class="font-semibold text-slate-100">Power Sander:</span> Speeding up surface finishing.</div> <!-- Adjusted color -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Timeline (Already dark) -->
+    <section id="process" class="py-16 bg-slate-900 text-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- ADDED 'section-title' class -->
+            <h2 class="text-3xl font-bold mb-12 text-center reveal-on-scroll section-title">4. The Fabrication Process</h2>
+            
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-700 transform -translate-x-1/2"></div>
+
+                <!-- Day 1 -->
+                <div class="relative mb-12 reveal-on-scroll">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="w-full md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0 pl-16 md:pl-0">
+                            <h3 class="text-2xl font-bold text-blue-400">Day 1: Tuesday (2025/11/11)</h3>
+                            <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold mt-1">Preparation & Cutting</p>
+                            <p class="mt-3 text-slate-300">We interpreted the dimensions, marked cut lines using try squares, and cut the base and side panels ensuring straight edges.</p>
+                        </div>
+                        <div class="absolute left-8 md:left-1/2 w-8 h-8 bg-blue-500 rounded-full transform -translate-x-1/2 flex items-center justify-center border-4 border-slate-900 z-10 pulse-animate-blue">
+                            <span class="text-xs font-bold">1</span>
+                        </div>
+                        <div class="w-full md:w-1/2 md:pl-12 pl-16">
+                            <!-- Day 1 Image -->
+                            <div class="bg-slate-800 rounded-lg w-full md:w-64 overflow-hidden border border-slate-700 shadow-lg">
+                                <img src="tuseday.jpeg" alt="Day 1 - Measuring and Cutting" class="w-full h-auto object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="relative reveal-on-scroll">
+                    <div class="flex flex-col md:flex-row-reverse items-center">
+                        <div class="w-full md:w-1/2 md:pl-12 md:text-left mb-4 md:mb-0 pl-16 md:pl-0">
+                            <!-- UPDATED: green -> purple -->
+                            <h3 class="text-2xl font-bold text-purple-400">Day 2: Wednesday (2025/11/12)</h3>
+                            <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold mt-1">Assembly & Finishing</p>
+                            <p class="mt-3 text-slate-300">We assembled the box using nails and teamwork. One student held the alignment while another hammered. Finally, we sanded the box and labeled it.</p>
+                        </div>
+                        <!-- UPDATED: green -> purple -->
+                        <div class="absolute left-8 md:left-1/2 w-8 h-8 bg-purple-500 rounded-full transform -translate-x-1/2 flex items-center justify-center border-4 border-slate-900 z-10 pulse-animate-purple">
+                            <span class="text-xs font-bold">2</span>
+                        </div>
+                        <div class="w-full md:w-1/2 md:pr-12 pl-16 flex justify-end">
+                             <!-- Day 2 Image -->
+                             <div class="bg-slate-800 rounded-lg w-full md:w-64 overflow-hidden border border-slate-700 shadow-lg">
+                                <img src="wedsnday.jpeg" alt="Day 2 - Assembly" class="w-full h-auto object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- DELETED: Gallery Section --- -->
+    <!-- <section id="gallery" ...> ... </section> -->
+
+    <!-- Conclusion -->
+    <!-- EDIT: Switched to dark theme -->
+    <section class="py-16 bg-slate-900 reveal-on-scroll">
+        <div class="max-w-3xl mx-auto px-4 text-center">
+            <!-- ADDED 'section-title' class -->
+            <h2 class="text-3xl font-bold text-slate-100 mb-6 section-title">Conclusion</h2> <!-- Adjusted color -->
+            <p class="text-lg text-slate-400 mb-8"> <!-- Adjusted color -->
+                The workshop was a success, resulting in a sturdy, well-constructed wooden box. The guidance provided by Mr. Abdulaziz Alshehri was instrumental. We gained confidence in handling tools, reinforced our safety habits, and improved our teamwork skills.
+            </p>
+            <!-- Adjusted colors -->
+            <div class="inline-block p-4 bg-blue-900/20 rounded-xl border border-blue-700 animated-gradient">
+                <span class="font-semibold text-blue-300">Key Takeaway:</span>
+                <span class="text-blue-200">Precision and Safety are the pillars of good craftsmanship.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Already dark) -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2025 Workshop Report • DataVolt Hvac-5</p>
+            <p class="text-sm text-slate-600 mb-4">Instructor: Mr. Abdulaziz Alshehri</p>
+            <p class="text-sm text-slate-500">Created with love by Jasser Alenzi</p>
+        </div>
+    </footer>
+
+    <script>
+        // lucide.createIcons(); // Moved this to the new script block
+
+        /* --- Animation Script Start --- */
+        // Wait for the DOM to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create all Lucide icons
+            lucide.createIcons();
+
+            // --- Nav Scroll ---
+            const nav = document.getElementById('main-nav');
+            const heroBg = document.getElementById('hero-bg'); // Get hero BG
+
+            window.addEventListener('scroll', () => {
+                // Nav shrink
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+
+                // --- New: Parallax Hero ---
+                if (heroBg) {
+                    const scrollY = window.scrollY;
+                    // Move the background up slowly. Adjust '0.2' for more/less effect
+                    heroBg.style.transform = `translateY(${scrollY * 0.2}px)`;
+                }
+            });
+
+            // IntersectionObserver for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing after it's visible
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            // Find all elements to reveal on scroll
+            const elementsToReveal = document.querySelectorAll('.reveal-on-scroll');
+            elementsToReveal.forEach(el => {
+                observer.observe(el);
+            });
+        });
+        /* --- Animation Script End --- */
+    </script>
+</body>
+</html>
